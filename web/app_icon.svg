@@ -1,0 +1,58 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="#075E54"/>
+  <circle cx="256" cy="256" r="220" fill="#25D366"/>
+  <circle cx="256" cy="256" r="200" fill="#075E54"/>
+  
+  <!-- Campus Building -->
+  <rect x="180" y="220" width="152" height="120" fill="#FFFFFF" rx="8"/>
+  <rect x="190" y="230" width="132" height="100" fill="#E8F5E8" rx="4"/>
+  
+  <!-- Building Windows -->
+  <rect x="200" y="245" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="235" y="245" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="270" y="245" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="305" y="245" width="24" height="24" fill="#075E54" rx="2"/>
+  
+  <rect x="200" y="280" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="235" y="280" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="270" y="280" width="24" height="24" fill="#075E54" rx="2"/>
+  <rect x="305" y="280" width="24" height="24" fill="#075E54" rx="2"/>
+  
+  <!-- Building Door -->
+  <rect x="240" y="310" width="32" height="30" fill="#075E54" rx="4"/>
+  <circle cx="265" cy="325" r="3" fill="#FFFFFF"/>
+  
+  <!-- Roof -->
+  <polygon points="170,220 256,170 342,220" fill="#FFD700"/>
+  
+  <!-- Magnifying Glass -->
+  <circle cx="350" cy="180" r="35" fill="none" stroke="#FFD700" stroke-width="8"/>
+  <circle cx="350" cy="180" r="25" fill="none" stroke="#FFD700" stroke-width="4"/>
+  <line x1="375" y1="205" x2="400" y2="230" stroke="#FFD700" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Lost Item (Phone) -->
+  <rect x="120" y="280" width="24" height="40" fill="#FF6B6B" rx="6"/>
+  <rect x="125" y="285" width="14" height="25" fill="#FFFFFF" rx="2"/>
+  <circle cx="132" cy="315" r="3" fill="#FFFFFF"/>
+  
+  <!-- Found Item (Keys) -->
+  <circle cx="390" cy="300" r="8" fill="#FFD700"/>
+  <rect x="386" y="308" width="8" height="16" fill="#FFD700"/>
+  <rect x="382" y="312" width="4" height="4" fill="#075E54"/>
+  <rect x="382" y="318" width="4" height="4" fill="#075E54"/>
+  
+  <!-- Connection Lines -->
+  <path d="M 144 300 Q 256 250 350 180" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-dasharray="8,8" opacity="0.8"/>
+  <path d="M 350 215 Q 370 250 390 292" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-dasharray="8,8" opacity="0.8"/>
+  
+  <!-- Chat Bubble -->
+  <ellipse cx="100" cy="380" rx="30" ry="20" fill="#FFFFFF"/>
+  <polygon points="75,395 100,405 100,395" fill="#FFFFFF"/>
+  <circle cx="90" cy="375" r="3" fill="#075E54"/>
+  <circle cx="100" cy="375" r="3" fill="#075E54"/>
+  <circle cx="110" cy="375" r="3" fill="#075E54"/>
+  
+  <!-- L&F Text -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF" text-anchor="middle">L&amp;F</text>
+</svg>

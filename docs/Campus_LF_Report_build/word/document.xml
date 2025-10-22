@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>Campus Lost &amp; Found (Campus LF)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Student: Keagile Gaugelo</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Module: Mobile Application Development (MAD300)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Institution: School of Computing, Example University</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Supervisor: Mr. T. Mokoena</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Date: 09 October 2025</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Contact: keagile.gaugelo@students.example.edu | +27 73 000 0000</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Abstract: A mobile-first app enabling students and staff to post, search, and recover lost items on campus. It integrates authentication, reporting, search, chat, and profile management.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>1) Project Title and Covering Page</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Title: Campus Lost &amp; Found (Campus LF)</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>2) Context of the App</w:t></w:r></w:p>
+    <w:p><w:r><w:t>On a busy campus, people misplace small but important things every daystudent cards, headphones, USB drives, lab equipment. I noticed that recovery often depends on chance: a friend’s message in a group chat, a note on a notice board, or a kind stranger walking items to the admin office. None of these are structured or searchable.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Campus LF focuses on short, in-the-moment tasks. Mobile is the natural fit because it lets us take a quick photo, add a short description, and mark an approximate location right where we are. Instead of long forms or desktop sessions, the experience aims for a minimal number of taps and clear, humane language.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Primary users include students, lecturers, administrative staff, and campus security. Each has slightly different needs: students post and search frequently, security staff may verify ownership and resolve reports, and lecturers may post items found in classrooms.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>3) Goals and Objectives</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Core functions: authenticated posting, search and filtering, lightweight chat between finder and owner, user profiles, and a personal My Reports area. The app avoids unnecessary frictionno mandatory location services or long text fieldswhile keeping enough detail to match items reliably.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Information flow: users submit a short report (title, category, description, image). The system stores and indexes the report, updates status when items are claimed, and surfaces relevant matches via search. Outputs include item cards, report detail pages, and message threads for coordination.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>4) User Manual</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Getting started: from the landing page, sign in or register with email and password. Youll arrive at Home, which shows recent reports with clear item thumbnails and concise titles.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Posting a report: tap “Add Report”, write a short title (e.g., Black wallet near Library), choose a category, add a brief description, and attach a photo. If helpful, type a location hint such as left on the front desk. Save, and the item appears on Home and in My Reports.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>My Reports: see your own posts in one place. Edit details, mark as resolved once claimed, or delete if posted by mistake.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Search: use keywords like wallet or USB and apply filters (date, category). Tap an item to open details and contact the poster if you think it’s yours.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Profile: keep your display name recognisable and set preferences for notifications, so you’re alerted when someone replies to your post.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>5) Coding (Appendix)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Framework: Flutter (Dart). Entry files include lib/main.dart and lib/app.dart. Main pages: Home, Report, My Reports, Search, Profile, Chat, Settings, and About. Android-specific configuration lives in android/app/src/main/AndroidManifest.xml and android/app/build.gradle.kts.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Data: Firebase Auth, Firestore, and Storage handle sign-in, structured item storage, and images. Locally, Shared Preferences stores lightweight settings; Path Provider helps with file access. Libraries such as url_launcher support opening mail and web links from inside the app.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>6) Oral Presentation (20 minutes)</w:t></w:r></w:p>
+    <w:p><w:r><w:t>The talk flows as follows: a short problem statement (why lost items are hard to return), goals and non-goals, architecture overview, and a concise demo. The demo covers sign-in, posting an item, seeing it appear on Home and in My Reports, searching for items, starting a chat, and updating profile info. Ill close with honest limitations and next steps.</w:t></w:r></w:p>
+
+    <w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:t>7) References</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Flutter documentation (widgets, navigation, and app lifecycle); Firebase guides for Auth, Firestore, and Storage; Material Design for consistent UI patterns; and campus policies on lost-and-found and data protection. I also reviewed several UI/UX articles on reducing friction in short mobile tasks.</w:t></w:r></w:p>
+
+    <w:sectPr/>
+  </w:body>
+</w:document>
