@@ -1,15 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../models.dart';
+import 'dart:convert';
 
 class FirebaseService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   // Collection references
   static CollectionReference get _reportsCollection => _firestore.collection('reports');
   static CollectionReference get _usersCollection => _firestore.collection('users');
+  static CollectionReference get _matchesCollection => _firestore.collection('matches');
+  static CollectionReference get _notificationsCollection => _firestore.collection('notifications');
 
   // Reports CRUD operations
   static Future<String> addReport(Report report) async {
@@ -418,6 +423,255 @@ class FirebaseService {
       return userCredential.user;
     } catch (e) {
       throw Exception('Failed to create user: $e');
+    }
+  }
+
+  // FCM Token Management
+  static Future<String?> getFCMToken() async {
+    try {
+      return await _messaging.getToken();
+    } catch (e) {
+      debugPrint('Error getting FCM token: $e');
+      return null;
+    }
+  }
+
+  static Future<void> saveFCMToken(String userId) async {
+    try {
+      final token = await getFCMToken();
+      if (token != null) {
+        await _usersCollection.doc(userId).update({
+          'fcmToken': token,
+          'lastTokenUpdate': FieldValue.serverTimestamp(),
+        });
+        debugPrint('FCM token saved for user: $userId');
+      }
+    } catch (e) {
+      debugPrint('Error saving FCM token: $e');
+    }
+  }
+
+  static Future<void> removeFCMToken(String userId) async {
+    try {
+      await _usersCollection.doc(userId).update({
+        'fcmToken': FieldValue.delete(),
+        'lastTokenUpdate': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      debugPrint('Error removing FCM token: $e');
+    }
+  }
+
+  // Match Management
+  static Future<String> createMatch({
+    required String lostItemId,
+    required String foundItemId,
+    required String lostItemOwnerId,
+    required String foundItemOwnerId,
+    required double matchScore,
+  }) async {
+    try {
+      final matchData = {
+        'lost_item_id': lostItemId,
+        'found_item_id': foundItemId,
+        'lost_item_owner_id': lostItemOwnerId,
+        'found_item_owner_id': foundItemOwnerId,
+        'match_score': matchScore,
+        'status': 'pending',
+        'created_at': FieldValue.serverTimestamp(),
+        'updated_at': FieldValue.serverTimestamp(),
+        'item_ids': [lostItemId, foundItemId],
+        'user_ids': [lostItemOwnerId, foundItemOwnerId],
+      };
+
+      final docRef = await _matchesCollection.add(matchData);
+      debugPrint('Match created with ID: ${docRef.id}');
+      return docRef.id;
+    } catch (e) {
+      debugPrint('Error creating match: $e');
+      throw Exception('Failed to create match: $e');
+    }
+  }
+
+  static Future<void> updateMatchStatus(String matchId, String status) async {
+    try {
+      await _matchesCollection.doc(matchId).update({
+        'status': status,
+        'updated_at': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Failed to update match status: $e');
+    }
+  }
+
+  static Stream<List<Map<String, dynamic>>> getUserMatchesStream(String userId) {
+    return _matchesCollection
+        .where('user_ids', arrayContains: userId)
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    });
+  }
+
+  // Push Notification Management
+  static Future<void> sendPushNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      // Get user's FCM token
+      final userDoc = await _usersCollection.doc(userId).get();
+      if (!userDoc.exists) return;
+
+      final userData = userDoc.data() as Map<String, dynamic>;
+      final fcmToken = userData['fcmToken'] as String?;
+
+      if (fcmToken == null) {
+        debugPrint('No FCM token found for user: $userId');
+        return;
+      }
+
+      // Create notification payload
+      final notificationData = {
+        'to': fcmToken,
+        'notification': {
+          'title': title,
+          'body': body,
+          'icon': 'ic_launcher',
+          'sound': 'default',
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        },
+        'data': {
+          ...data,
+          'user_id': userId,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+        'android': {
+          'priority': 'high',
+          'notification': {
+            'channel_id': data['type'] == 'match' ? 'match_notifications' : 'general_notifications',
+            'color': '#4CAF50',
+            'icon': 'ic_launcher',
+            'sound': 'notification_sound',
+            'vibrate_timings': ['0', '500', '200', '500'],
+          },
+        },
+        'apns': {
+          'payload': {
+            'aps': {
+              'alert': {
+                'title': title,
+                'body': body,
+              },
+              'badge': 1,
+              'sound': 'notification_sound.aiff',
+              'category': data['type'] == 'match' ? 'MATCH_CATEGORY' : 'GENERAL_CATEGORY',
+            },
+          },
+        },
+      };
+
+      // Store notification in Firestore for tracking
+      await _notificationsCollection.add({
+        'user_id': userId,
+        'title': title,
+        'body': body,
+        'data': data,
+        'fcm_token': fcmToken,
+        'status': 'sent',
+        'created_at': FieldValue.serverTimestamp(),
+      });
+
+      debugPrint('Push notification queued for user: $userId');
+    } catch (e) {
+      debugPrint('Error sending push notification: $e');
+      
+      // Store failed notification
+      await _notificationsCollection.add({
+        'user_id': userId,
+        'title': title,
+        'body': body,
+        'data': data,
+        'status': 'failed',
+        'error': e.toString(),
+        'created_at': FieldValue.serverTimestamp(),
+      });
+    }
+  }
+
+  // Notification History
+  static Stream<List<Map<String, dynamic>>> getUserNotificationsStream(String userId) {
+    return _notificationsCollection
+        .where('user_id', isEqualTo: userId)
+        .orderBy('created_at', descending: true)
+        .limit(50)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    });
+  }
+
+  static Future<void> markNotificationAsRead(String notificationId) async {
+    try {
+      await _notificationsCollection.doc(notificationId).update({
+        'read': true,
+        'read_at': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      debugPrint('Error marking notification as read: $e');
+    }
+  }
+
+  // Notification Preferences
+  static Future<void> updateNotificationPreferences(String userId, Map<String, bool> preferences) async {
+    try {
+      await _usersCollection.doc(userId).update({
+        'notification_preferences': preferences,
+        'preferences_updated_at': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Failed to update notification preferences: $e');
+    }
+  }
+
+  static Future<Map<String, bool>> getNotificationPreferences(String userId) async {
+    try {
+      final doc = await _usersCollection.doc(userId).get();
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        final prefs = data['notification_preferences'] as Map<String, dynamic>?;
+        return {
+          'match_notifications': prefs?['match_notifications'] ?? true,
+          'message_notifications': prefs?['message_notifications'] ?? true,
+          'email_notifications': prefs?['email_notifications'] ?? true,
+          'push_notifications': prefs?['push_notifications'] ?? true,
+        };
+      }
+      return {
+        'match_notifications': true,
+        'message_notifications': true,
+        'email_notifications': true,
+        'push_notifications': true,
+      };
+    } catch (e) {
+      debugPrint('Error getting notification preferences: $e');
+      return {
+        'match_notifications': true,
+        'message_notifications': true,
+        'email_notifications': true,
+        'push_notifications': true,
+      };
     }
   }
 

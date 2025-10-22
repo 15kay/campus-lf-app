@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'services/firebase_service.dart';
 
 class UserProfile {
   String uid;
@@ -393,4 +394,27 @@ String getEmailForUid(String uid) {
   
   // Fallback for demo/unknown users
   return 'user@campus.edu';
+}
+
+// Async helper function to get actual email for a user ID from Firebase
+Future<String> getEmailForUidAsync(String uid) async {
+  try {
+    // For authenticated users, return current user email
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && currentUser.uid == uid) {
+      return currentUser.email ?? 'user@campus.edu';
+    }
+    
+    // Fetch user profile from Firebase to get actual email
+    final userProfile = await FirebaseService.getUserProfile(uid);
+    if (userProfile != null && userProfile.email.isNotEmpty) {
+      return userProfile.email;
+    }
+    
+    // Fallback for unknown users
+    return 'user@campus.edu';
+  } catch (e) {
+    print('Error fetching email for UID $uid: $e');
+    return 'user@campus.edu';
+  }
 }

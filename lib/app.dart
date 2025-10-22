@@ -3,6 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'models.dart';
 import 'services/firebase_service.dart';
+import 'services/notification_service.dart';
+import 'services/match_notification_handler.dart';
+import 'widgets/notification_toast.dart';
 import 'pages/home_page.dart';
 import 'pages/report_page.dart';
 import 'pages/my_reports_page.dart';
@@ -476,22 +479,28 @@ class ItemDetailsPage extends StatelessWidget {
                 children: [
                   Text('Reporter Contact', style: tt.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: cs.secondaryContainer,
-                      child: Text(
-                        (report.uid.isNotEmpty ? report.uid[0] : '?').toUpperCase(),
-                        style: TextStyle(color: cs.onSecondaryContainer, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    title: Text(getEmailForUid(report.uid).split('@').first),
-                     subtitle: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                        Text('Email: ${getEmailForUid(report.uid)}'),
-                       ],
-                     ),
+                  FutureBuilder<String>(
+                    future: getEmailForUidAsync(report.uid),
+                    builder: (context, snapshot) {
+                      final email = snapshot.data ?? 'Loading...';
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: CircleAvatar(
+                          backgroundColor: cs.secondaryContainer,
+                          child: Text(
+                            (report.uid.isNotEmpty ? report.uid[0] : '?').toUpperCase(),
+                            style: TextStyle(color: cs.onSecondaryContainer, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        title: Text(email.split('@').first),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Email: $email'),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   Wrap(
@@ -502,7 +511,8 @@ class ItemDetailsPage extends StatelessWidget {
                         icon: const Icon(Icons.copy),
                         label: const Text('Copy Email'),
                         onPressed: () async {
-                          Clipboard.setData(ClipboardData(text: getEmailForUid(report.uid)));
+                          final email = await getEmailForUidAsync(report.uid);
+                          Clipboard.setData(ClipboardData(text: email));
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email copied')));
                         },
                       ),
@@ -610,7 +620,7 @@ class ItemDetailsPage extends StatelessWidget {
                         label: const Text('Email Reporter'),
                         onPressed: () async {
                           final messenger = ScaffoldMessenger.of(context);
-                          final email = getEmailForUid(report.uid);
+                          final email = await getEmailForUidAsync(report.uid);
                           final subject = Uri.encodeComponent('[Lost & Found] Regarding: ${report.itemName}');
                           final body = Uri.encodeComponent('Hi, I saw your ${report.status.toLowerCase()} report for "${report.itemName}" at ${report.location} on ${report.date.toIso8601String().substring(0,10)}.\n\nCould we connect to resolve this?');
                           final uri = Uri.parse('mailto:$email?subject=$subject&body=$body');
@@ -649,6 +659,72 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   void initState() {
     super.initState();
+    _setupNotificationHandling();
+  }
+
+  void _setupNotificationHandling() {
+    // Set up notification tap handler for navigation
+    NotificationService.setNotificationTapHandler((payload) {
+      _handleNotificationTap(payload);
+    });
+
+    // Initialize match notification handler
+    MatchNotificationHandler.initialize();
+  }
+
+  void _handleNotificationTap(Map<String, dynamic> payload) {
+    final type = payload['type'] as String?;
+    
+    switch (type) {
+      case 'match':
+        final matchId = payload['matchId'] as String?;
+        final itemId = payload['itemId'] as String?;
+        if (matchId != null && itemId != null) {
+          _navigateToMatchDetails(matchId, itemId);
+        } else {
+          // Navigate to matches page if specific match data is not available
+          setState(() => _currentIndex = 1); // Matches tab
+        }
+        break;
+      case 'message':
+        final chatId = payload['chatId'] as String?;
+        if (chatId != null) {
+          _navigateToChatDetails(chatId);
+        } else {
+          // Navigate to chat list if specific chat data is not available
+          setState(() => _currentIndex = 3); // Chat tab
+        }
+        break;
+      default:
+        // Default to home page
+        setState(() => _currentIndex = 0);
+    }
+  }
+
+  void _navigateToMatchDetails(String matchId, String itemId) {
+    // Navigate to matches page and then to specific match
+    setState(() => _currentIndex = 1); // Matches tab
+    
+    // Show match notification toast
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        NotificationToast.showMatchNotification(
+          context,
+          itemName: 'Your Item',
+          matchedUserName: 'Someone',
+          onTap: () {
+            // Additional navigation logic if needed
+          },
+        );
+      }
+    });
+  }
+
+  void _navigateToChatDetails(String chatId) {
+    // Navigate to chat list and then to specific chat
+    setState(() => _currentIndex = 3); // Chat tab
+    
+    // Additional logic to open specific chat could be added here
   }
 
   List<_NavItem> get _mainItems => [
@@ -681,6 +757,10 @@ class _MainScaffoldState extends State<MainScaffold> {
   void _addReport(Report r) async {
     try {
       await FirebaseService.addReport(r);
+      
+      // Check for potential matches and send notifications
+      await MatchNotificationHandler.handleNewReport(r);
+      
       setState(() => _currentIndex = 0);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
