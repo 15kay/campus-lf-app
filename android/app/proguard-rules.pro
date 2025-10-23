@@ -34,3 +34,7 @@
 
 # Keep model classes
 -keep class com.wsu.campuslf.** { *; }
+
+# Google Play Core rules
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**

@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -14,6 +15,12 @@ class NotificationService {
   static final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
 
   static Future<void> initialize() async {
+    // Skip initialization on web platform
+    if (kIsWeb) {
+      print('Notification service: Web platform detected, skipping mobile-specific initialization');
+      return;
+    }
+    
     // Request notification permissions
     await _requestPermissions();
     
@@ -28,6 +35,8 @@ class NotificationService {
   }
 
   static Future<void> _requestPermissions() async {
+    if (kIsWeb) return;
+    
     if (Platform.isIOS) {
       await _firebaseMessaging.requestPermission(
         alert: true,

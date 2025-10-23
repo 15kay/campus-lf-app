@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'analytics_service.dart';
 
 class QRService {
-  static const String _baseUrl = 'https://campuslf.app'; // Replace with your app's URL
+  static const String _baseUrl = 'https://campuslf.web.app'; // Replace with your app's URL
 
   // Generate QR code data for an item
   static String generateItemQRData({

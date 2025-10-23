@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../models.dart';
 import '../services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -103,11 +102,12 @@ class HomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(24),
                           child: Padding(
                             padding: const EdgeInsets.all(20),
-                            child: SvgPicture.asset(
-                              'web/logo.svg',
+                            child: Image.asset(
+                              'web/CampusLF_Logo.png',
                               width: 60,
                               height: 60,
-                              placeholderBuilder: (context) => Icon(
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) => Icon(
                                 Icons.school_rounded,
                                 size: 60,
                                 color: Theme.of(context).colorScheme.primary,
@@ -198,6 +198,17 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+                // Dashboard Statistics Section
+                Text(
+                  'Dashboard Overview', 
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildStatisticsCards(context, reports),
+                const SizedBox(height: 32),
                 // Professional Quick Actions Section
                 Text(
                   'Quick Actions', 
@@ -858,6 +869,117 @@ class HomePage extends StatelessWidget {
         SnackBar(content: Text('Error starting chat: $e')),
       );
     }
+  }
+
+  Widget _buildStatisticsCards(BuildContext context, List<Report> reports) {
+    final totalReports = reports.length;
+    final lostItems = reports.where((r) => r.status == 'Lost').length;
+    final foundItems = reports.where((r) => r.status == 'Found').length;
+    final recentReports = reports.where((r) => 
+      DateTime.now().difference(r.timestamp).inDays <= 7
+    ).length;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            context,
+            'Total Reports',
+            totalReports.toString(),
+            Icons.assignment_rounded,
+            Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            context,
+            'Lost Items',
+            lostItems.toString(),
+            Icons.search_rounded,
+            Colors.orange,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            context,
+            'Found Items',
+            foundItems.toString(),
+            Icons.check_circle_rounded,
+            Colors.green,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            context,
+            'This Week',
+            recentReports.toString(),
+            Icons.schedule_rounded,
+            Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(BuildContext context, String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _navigateToMyReports(BuildContext context) {

@@ -34,12 +34,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   bool _isRecording = false;
   int? _playingIndex;
 
-  // Professional color scheme
-  static const Color primaryGreen = Color(0xFF2E7D32);
-  static const Color primaryBlue = Color(0xFF1976D2);
+  // Professional color scheme - aligned with app theme
+  static const Color primaryColor = Color(0xFF1976D2);
+  static const Color secondaryColor = Color(0xFF7C4DFF);
   static const Color lightGray = Color(0xFFF5F5F5);
   static const Color mediumGray = Color(0xFFE0E0E0);
   static const Color darkGray = Color(0xFF757575);
+  static const Color textDark = Color(0xFF212121);
+  static const Color textLight = Color(0xFF757575);
 
   // Dummy theme change function for navigation
   static void _dummyThemeChange(ThemeMode mode) {
@@ -699,11 +701,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Professional light background
+      backgroundColor: cs.surface,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2E7D32), // Professional green
+        backgroundColor: cs.primary,
         foregroundColor: Colors.white,
         elevation: 2,
         shadowColor: Colors.black26,
@@ -719,7 +722,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF1976D2), // Professional blue
+                color: cs.secondary,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
@@ -870,7 +873,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                   height: 256,
                   checkPlatformCompatibility: true,
                   emojiViewConfig: EmojiViewConfig(
-                    backgroundColor: const Color(0xFFF0F0F0),
+                    backgroundColor: cs.surfaceContainerHighest,
                     columns: 7,
                     emojiSizeMax: 32,
                   ),
@@ -901,7 +904,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: isMe ? const Color(0xFF2E7D32) : Colors.white, // Professional green for sent messages
+            color: isMe ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(12),
               topRight: const Radius.circular(12),
@@ -927,7 +930,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                   Text(
                     _formatTime(m.timestamp),
                     style: TextStyle(
-                      color: isMe ? Colors.white70 : Colors.grey[600],
+                      color: isMe ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.7) : Theme.of(context).colorScheme.onSurfaceVariant,
                       fontSize: 11,
                     ),
                   ),
@@ -948,7 +951,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -964,16 +967,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(25),
-                  border: Border.all(color: const Color(0xFFE0E0E0)),
+                  border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
                     IconButton(
                       icon: Icon(
                         _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions_outlined, 
-                        color: const Color(0xFF757575)
+                        color: Theme.of(context).colorScheme.onSurfaceVariant
                       ),
                       onPressed: () {
                         setState(() {
@@ -984,9 +987,9 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     Expanded(
                       child: TextField(
                         controller: _controller,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Type a message...',
-                          hintStyle: TextStyle(color: Color(0xFF9E9E9E)),
+                          hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(vertical: 12),
                         ),
@@ -997,11 +1000,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.attach_file, color: Color(0xFF757575)),
+                      icon: Icon(Icons.attach_file, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       onPressed: _pickImageAttachment,
                     ),
                     IconButton(
-                      icon: const Icon(Icons.camera_alt, color: Color(0xFF757575)),
+                      icon: Icon(Icons.camera_alt, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       onPressed: _pickImageAttachment,
                     ),
                   ],
@@ -1015,8 +1018,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     child: Container(
                       width: 48,
                       height: 48,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF2E7D32), // Professional green
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -1033,7 +1036,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: _isRecording ? const Color(0xFFD32F2F) : const Color(0xFF2E7D32), // Professional red/green
+                        color: _isRecording ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -1087,7 +1090,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
               IconButton(
                 icon: Icon(
                   _playingIndex == index ? Icons.pause : Icons.play_arrow,
-                  color: const Color(0xFF2E7D32), // Professional green
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () => _togglePlay(m.audioUrl ?? '', index), // Fixed audio playback
                 padding: EdgeInsets.zero,
@@ -1098,14 +1101,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 width: 100,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0), // Professional light gray
-                  borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFFE0E0E0), // Light gray
+                    borderRadius: BorderRadius.circular(10),
                 ),
                 child: Container(
                   width: 60, // Simulate audio progress
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E7D32), // Professional green
-                    borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFF1976D2), // Primary blue
+                      borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),

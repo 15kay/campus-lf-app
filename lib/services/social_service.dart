@@ -61,10 +61,8 @@ class SocialService {
       await _firestore.collection('user_profiles').doc(userId).set(profile.toMap());
 
       // Log analytics
-      await AnalyticsService.logUserSignUp(
-        signUpMethod: 'profile_creation',
-        userId: userId,
-      );
+      await AnalyticsService.logUserSignUp('profile_creation');
+      await AnalyticsService.setUserId(userId);
 
       return true;
     } catch (e) {

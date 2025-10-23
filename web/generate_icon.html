@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Transparent Icon</title>
+    <style>
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        .checkerboard {
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Campus Lost & Found - Transparent Logo Generator</h1>
+    
+    <div class="checkerboard" style="display: inline-block; padding: 20px;">
+        <canvas id="canvas192" width="192" height="192"></canvas>
+    </div>
+    
+    <div class="checkerboard" style="display: inline-block; padding: 20px;">
+        <canvas id="canvas512" width="512" height="512"></canvas>
+    </div>
+    
+    <br>
+    <button onclick="downloadIcon(192)">Download 192x192 PNG</button>
+    <button onclick="downloadIcon(512)">Download 512x512 PNG</button>
+    
+    <script>
+        function createTransparentIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas (transparent background)
+            ctx.clearRect(0, 0, size, size);
+            
+            // Set up gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#4F46E5');
+            gradient.addColorStop(1, '#7C3AED');
+            
+            const center = size / 2;
+            const scale = size / 192; // Scale factor based on 192px base
+            
+            // Draw magnifying glass
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 8 * scale;
+            ctx.lineCap = 'round';
+            
+            // Magnifying glass circle
+            ctx.beginPath();
+            ctx.arc(center - 16 * scale, center - 16 * scale, 24 * scale, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Magnifying glass handle
+            ctx.beginPath();
+            ctx.moveTo(center + 4 * scale, center + 4 * scale);
+            ctx.lineTo(center + 20 * scale, center + 20 * scale);
+            ctx.stroke();
+            
+            // Lost item box
+            ctx.fillStyle = gradient;
+            const boxX = center - 40 * scale;
+            const boxY = center + 12 * scale;
+            roundRect(ctx, boxX, boxY, 28 * scale, 24 * scale, 4 * scale);
+            ctx.fill();
+            
+            // Question mark in box
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = `${16 * scale}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('?', boxX + 14 * scale, boxY + 18 * scale);
+            
+            // Found item circle
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(center + 30 * scale, center + 24 * scale, 14 * scale, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Checkmark
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 4 * scale;
+            ctx.beginPath();
+            ctx.moveTo(center + 22 * scale, center + 24 * scale);
+            ctx.lineTo(center + 28 * scale, center + 30 * scale);
+            ctx.lineTo(center + 38 * scale, center + 18 * scale);
+            ctx.stroke();
+            
+            // Campus buildings
+            const buildings = [
+                {x: -48, y: 0, w: 14, h: 28},
+                {x: -28, y: -6, w: 18, h: 34},
+                {x: -6, y: 3, w: 12, h: 25},
+                {x: 10, y: -4, w: 16, h: 32},
+                {x: 30, y: 6, w: 10, h: 22}
+            ];
+            
+            ctx.fillStyle = gradient;
+            ctx.globalAlpha = 0.8;
+            buildings.forEach(building => {
+                roundRect(ctx, 
+                    center + building.x * scale, 
+                    center + 64 * scale + building.y * scale, 
+                    building.w * scale, 
+                    building.h * scale, 
+                    2 * scale
+                );
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            
+            // Text
+            ctx.fillStyle = gradient;
+            ctx.font = `bold ${16 * scale}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('CAMPUS', center, 40 * scale);
+            
+            ctx.font = `${12 * scale}px Arial`;
+            ctx.fillText('Lost & Found', center, 58 * scale);
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `app_icon_${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Generate icons on page load
+        createTransparentIcon(192);
+        createTransparentIcon(512);
+    </script>
+</body>
+</html>

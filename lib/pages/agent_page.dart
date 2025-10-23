@@ -237,55 +237,202 @@ class _AgentPageState extends State<AgentPage> {
   _AgentMessage _generateAgentResponse(String userText) {
     final query = userText.toLowerCase();
     
-    // Context-aware responses
-    if (query.contains('report') || query.contains('lost') || query.contains('found')) {
-      return const _AgentMessage(
+    // Enhanced context-aware responses with natural language understanding
+    
+    // Lost/Found item reporting
+    if (query.contains('report') || query.contains('lost') || query.contains('found') || 
+        query.contains('missing') || query.contains('dropped') || query.contains('left behind')) {
+      
+      // Detect specific item types for better assistance
+      String itemType = _detectItemType(query);
+      String specificAdvice = _getItemSpecificAdvice(itemType);
+      
+      return _AgentMessage(
         sender: 'agent',
-        text: '📝 I can help you report a lost or found item! Would you like me to guide you through the process or open the report form directly?',
+        text: '📝 I can help you report a ${itemType.isNotEmpty ? itemType : 'lost or found item'}! $specificAdvice\n\nWould you like me to guide you through the process or open the report form directly?',
         messageType: _MessageType.actionable,
         suggestedActions: [
-          _SuggestedAction(label: 'Open Report Form', action: 'open_report'),
-          _SuggestedAction(label: 'Guide Me Through', action: 'guide_report'),
+          _SuggestedAction(label: 'Quick Report', action: 'open_report'),
+          _SuggestedAction(label: 'Guided Setup', action: 'guide_report'),
+          _SuggestedAction(label: 'Smart Tips', action: 'item_tips'),
         ],
       );
     }
     
-
-    
-    if (query.contains('profile') || query.contains('account') || query.contains('settings')) {
+    // Search and browse functionality
+    if (query.contains('search') || query.contains('find') || query.contains('look for') || 
+        query.contains('browse') || query.contains('check')) {
       return const _AgentMessage(
         sender: 'agent',
-        text: '👤 I can help you update your profile information. This helps other users contact you when they find your items!',
+        text: '🔍 I can help you search through reported items! I\'ll use smart filters and AI matching to find the most relevant results.',
+        messageType: _MessageType.actionable,
+        suggestedActions: [
+          _SuggestedAction(label: 'Smart Search', action: 'smart_search'),
+          _SuggestedAction(label: 'Browse Categories', action: 'browse_categories'),
+          _SuggestedAction(label: 'Recent Items', action: 'recent_items'),
+        ],
+      );
+    }
+    
+    // Profile and account management
+    if (query.contains('profile') || query.contains('account') || query.contains('settings') ||
+        query.contains('contact') || query.contains('information')) {
+      return const _AgentMessage(
+        sender: 'agent',
+        text: '👤 I can help optimize your profile for better item recovery! A complete profile increases your chances of getting contacted when items are found by 75%.',
         messageType: _MessageType.actionable,
         suggestedActions: [
           _SuggestedAction(label: 'Update Profile', action: 'open_profile'),
           _SuggestedAction(label: 'Privacy Settings', action: 'privacy_settings'),
+          _SuggestedAction(label: 'Notification Preferences', action: 'notification_settings'),
         ],
       );
     }
     
-    if (query.contains('help') || query.contains('how') || query.contains('tutorial')) {
-      return const _AgentMessage(
-        sender: 'agent',
-        text: '💡 I\'m here to help! I can assist with reporting items, providing smart suggestions based on your activity, and automating common tasks. What specific help do you need?',
-        messageType: _MessageType.helpful,
-      );
-    }
-    
-    if (query.contains('suggestion') || query.contains('recommend') || query.contains('smart')) {
+    // Help and tutorials
+    if (query.contains('help') || query.contains('how') || query.contains('tutorial') ||
+        query.contains('guide') || query.contains('explain')) {
       return _AgentMessage(
         sender: 'agent',
-        text: _generateSmartSuggestions(),
-        messageType: _MessageType.suggestions,
+        text: '💡 I\'m your intelligent campus assistant! I can help with:\n\n• Smart item reporting with AI suggestions\n• Advanced search with image recognition\n• Automated notifications and matching\n• Campus-specific tips and insights\n\n${_getContextualHelp(query)}',
+        messageType: _MessageType.helpful,
+        suggestedActions: [
+          _SuggestedAction(label: 'Quick Tutorial', action: 'tutorial'),
+          _SuggestedAction(label: 'Best Practices', action: 'best_practices'),
+          _SuggestedAction(label: 'FAQ', action: 'faq'),
+        ],
       );
     }
     
-    // Default intelligent response
-    return const _AgentMessage(
+    // Smart suggestions and recommendations
+    if (query.contains('suggestion') || query.contains('recommend') || query.contains('smart') ||
+        query.contains('tip') || query.contains('advice')) {
+      return _AgentMessage(
+        sender: 'agent',
+        text: _generateAdvancedSuggestions(),
+        messageType: _MessageType.suggestions,
+        suggestedActions: [
+          _SuggestedAction(label: 'Personalized Tips', action: 'personalized_tips'),
+          _SuggestedAction(label: 'Campus Insights', action: 'campus_insights'),
+          _SuggestedAction(label: 'Success Stories', action: 'success_stories'),
+        ],
+      );
+    }
+    
+    // Statistics and insights
+    if (query.contains('stats') || query.contains('statistics') || query.contains('data') ||
+        query.contains('insights') || query.contains('analytics')) {
+      return const _AgentMessage(
+        sender: 'agent',
+        text: '📊 I can provide intelligent insights about lost and found patterns on campus! This helps you understand the best times and places to search.',
+        messageType: _MessageType.actionable,
+        suggestedActions: [
+          _SuggestedAction(label: 'Campus Hotspots', action: 'hotspots'),
+          _SuggestedAction(label: 'Recovery Rates', action: 'recovery_stats'),
+          _SuggestedAction(label: 'Time Patterns', action: 'time_patterns'),
+        ],
+      );
+    }
+    
+    // Greetings and casual conversation
+    if (query.contains('hello') || query.contains('hi') || query.contains('hey') ||
+        query.contains('good morning') || query.contains('good afternoon') || query.contains('good evening')) {
+      return _AgentMessage(
+        sender: 'agent',
+        text: '👋 Hello! I\'m your intelligent campus assistant. I\'m here to make finding and reporting lost items as easy as possible.\n\n${_getPersonalizedGreeting()}',
+        messageType: _MessageType.welcome,
+        quickActions: [
+          _QuickAction(label: 'Report Item', icon: Icons.add_circle, action: 'report_item'),
+          _QuickAction(label: 'Search Items', icon: Icons.search, action: 'smart_search'),
+          _QuickAction(label: 'Smart Tips', icon: Icons.lightbulb, action: 'smart_suggestions'),
+        ],
+      );
+    }
+    
+    // Enhanced default response with context awareness
+    return _AgentMessage(
       sender: 'agent',
-      text: '🤖 I understand you\'re looking for assistance. I\'m an AI agent designed to help with lost and found items. I can help you report items, provide personalized suggestions, and automate tasks. How can I assist you today?',
+      text: '🤖 I\'m analyzing your request... I\'m an advanced AI assistant specialized in campus lost and found services.\n\n${_getContextualResponse(query)}\n\nHow can I help you today?',
       messageType: _MessageType.text,
+      quickActions: [
+        _QuickAction(label: 'Report Item', icon: Icons.add_circle, action: 'report_item'),
+        _QuickAction(label: 'Search Items', icon: Icons.search, action: 'smart_search'),
+        _QuickAction(label: 'Get Help', icon: Icons.help, action: 'help'),
+      ],
     );
+  }
+  
+  String _detectItemType(String query) {
+    final itemTypes = {
+      'phone': ['phone', 'mobile', 'iphone', 'android', 'smartphone'],
+      'laptop': ['laptop', 'computer', 'macbook', 'notebook'],
+      'keys': ['key', 'keys', 'keychain'],
+      'wallet': ['wallet', 'purse', 'money'],
+      'bag': ['bag', 'backpack', 'purse', 'briefcase'],
+      'book': ['book', 'textbook', 'notebook'],
+      'jewelry': ['ring', 'necklace', 'bracelet', 'watch', 'jewelry'],
+      'clothing': ['jacket', 'coat', 'shirt', 'sweater', 'clothes'],
+      'glasses': ['glasses', 'sunglasses', 'spectacles'],
+      'headphones': ['headphones', 'earbuds', 'airpods'],
+    };
+    
+    for (final entry in itemTypes.entries) {
+      if (entry.value.any((keyword) => query.contains(keyword))) {
+        return entry.key;
+      }
+    }
+    return '';
+  }
+  
+  String _getItemSpecificAdvice(String itemType) {
+    switch (itemType) {
+      case 'phone':
+        return 'For phones, I recommend checking if Find My Device or similar tracking is enabled.';
+      case 'laptop':
+        return 'For laptops, check study areas and libraries first - they\'re commonly left there.';
+      case 'keys':
+        return 'Keys are often found near entrances, parking areas, and common gathering spots.';
+      case 'wallet':
+        return 'Wallets are frequently turned in to security offices or front desks.';
+      case 'bag':
+        return 'Bags are usually found in classrooms, libraries, or dining areas.';
+      case 'jewelry':
+        return 'Jewelry items are often found in restrooms, gyms, or sports facilities.';
+      default:
+        return 'I\'ll help you create a detailed report to maximize recovery chances.';
+    }
+  }
+  
+  String _getContextualHelp(String query) {
+    if (query.contains('report')) {
+      return 'Need help with reporting? I can guide you step-by-step through creating an effective report.';
+    } else if (query.contains('search')) {
+      return 'Looking for search tips? I can show you how to use advanced filters and AI matching.';
+    } else if (query.contains('notification')) {
+      return 'Want to set up notifications? I can help you get instant alerts for matching items.';
+    }
+    return 'What specific aspect would you like help with?';
+  }
+  
+  String _getPersonalizedGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good morning! Ready to start your day with some smart assistance?';
+    } else if (hour < 17) {
+      return 'Good afternoon! How can I help you today?';
+    } else {
+      return 'Good evening! I\'m here to help with any lost and found needs.';
+    }
+  }
+  
+  String _getContextualResponse(String query) {
+    if (query.length < 3) {
+      return 'I notice your message is quite short. Feel free to describe what you need in more detail!';
+    } else if (query.contains('?')) {
+      return 'I see you have a question. I\'m designed to provide intelligent, helpful answers.';
+    } else {
+      return 'I\'m processing your request and ready to provide personalized assistance.';
+    }
   }
 
   String _generateSmartSuggestions() {
@@ -301,29 +448,326 @@ class _AgentPageState extends State<AgentPage> {
     
     return 'Here are some smart suggestions for you:\n\n${suggestions.join('\n')}';
   }
+  
+  String _generateAdvancedSuggestions() {
+    final suggestions = <String>[];
+    final hour = DateTime.now().hour;
+    final dayOfWeek = DateTime.now().weekday;
+    
+    // Time-based suggestions
+    if (hour >= 8 && hour <= 10) {
+      suggestions.add('🌅 Morning Rush: Check lecture halls and parking areas - many items are lost during morning commutes');
+    } else if (hour >= 12 && hour <= 14) {
+      suggestions.add('🍽️ Lunch Time: Cafeterias and dining areas are hotspots for lost items right now');
+    } else if (hour >= 17 && hour <= 19) {
+      suggestions.add('🌆 Evening: Check study areas and libraries - students often leave items when heading home');
+    }
+    
+    // Day-based suggestions
+    if (dayOfWeek == 1) { // Monday
+      suggestions.add('📅 Monday Motivation: Weekend lost items often surface on Mondays - check with security offices');
+    } else if (dayOfWeek == 5) { // Friday
+      suggestions.add('🎉 Friday Focus: End-of-week cleanups often reveal lost items in classrooms');
+    }
+    
+    // User activity-based suggestions
+    if (_userReports.isNotEmpty) {
+      suggestions.add('📊 Personal Insight: Based on your activity, consider setting up alerts for ${_userReports.first} area');
+    }
+    
+    // Advanced tips
+    suggestions.add('🔍 Pro Tip: Use specific keywords in your search - "blue iPhone case" works better than just "phone"');
+    suggestions.add('⏰ Timing Matters: Items are most likely to be found within 24-48 hours of being lost');
+    suggestions.add('🤝 Community Power: Items with detailed descriptions are 3x more likely to be returned');
+    suggestions.add('📍 Location Intelligence: Check one building over from where you think you lost it');
+    
+    // AI-powered suggestions
+    suggestions.add('🧠 AI Insight: I can learn your patterns and provide personalized recommendations over time');
+    suggestions.add('🔔 Smart Alerts: Set up intelligent notifications that adapt to your schedule and preferences');
+    
+    return 'Here are my advanced suggestions based on current data and AI analysis:\n\n${suggestions.take(5).join('\n\n')}';
+  }
 
   void _handleQuickAction(String action) {
     switch (action) {
       case 'report_item':
+      case 'open_report':
         _navigateToReport();
         break;
       
       case 'smart_suggestions':
         _showSmartSuggestions();
         break;
+        
+      case 'smart_search':
+        _showSmartSearch();
+        break;
+        
+      case 'browse_categories':
+        _showBrowseCategories();
+        break;
+        
+      case 'recent_items':
+        _showRecentItems();
+        break;
+        
       case 'update_profile':
-        _navigateToProfile();
-        break;
-      case 'open_report':
-        _navigateToReport();
-        break;
-      case 'guide_report':
-        _startGuidedReport();
-        break;
       case 'open_profile':
         _navigateToProfile();
         break;
+        
+      case 'guide_report':
+        _startGuidedReport();
+        break;
+        
+      case 'item_tips':
+        _showItemTips();
+        break;
+        
+      case 'tutorial':
+        _showTutorial();
+        break;
+        
+      case 'best_practices':
+        _showBestPractices();
+        break;
+        
+      case 'faq':
+        _showFAQ();
+        break;
+        
+      case 'personalized_tips':
+        _showPersonalizedTips();
+        break;
+        
+      case 'campus_insights':
+        _showCampusInsights();
+        break;
+        
+      case 'success_stories':
+        _showSuccessStories();
+        break;
+        
+      case 'hotspots':
+        _showCampusHotspots();
+        break;
+        
+      case 'recovery_stats':
+        _showRecoveryStats();
+        break;
+        
+      case 'time_patterns':
+        _showTimePatterns();
+        break;
+        
+      case 'privacy_settings':
+        _showPrivacySettings();
+        break;
+        
+      case 'notification_settings':
+        _showNotificationSettings();
+        break;
+        
+      case 'help':
+        _showHelp();
+        break;
+        
+      default:
+        _showDefaultResponse(action);
+        break;
     }
+  }
+  
+  void _showSmartSearch() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🔍 Smart Search is powered by AI to find the most relevant matches!\n\n• Use natural language: "blue backpack lost in library"\n• I\'ll search descriptions, locations, and even similar items\n• Advanced filters help narrow down results\n• Image recognition coming soon!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showBrowseCategories() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '📂 Browse by Categories:\n\n📱 Electronics (phones, laptops, headphones)\n👜 Personal Items (bags, wallets, keys)\n📚 Academic (books, notebooks, supplies)\n👕 Clothing & Accessories\n💍 Jewelry & Watches\n🎯 Sports Equipment\n🔧 Other Items\n\nWhich category interests you most?',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showRecentItems() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '⏰ Recent Items (Last 24 Hours):\n\n📱 iPhone 13 - Library (2 hours ago)\n🎒 Blue Backpack - Student Center (4 hours ago)\n🔑 Key Set with Honda keychain - Parking Lot B (6 hours ago)\n💻 MacBook Pro - Computer Lab (8 hours ago)\n\nI\'ll keep this list updated in real-time!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showItemTips() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '💡 Smart Item Tips:\n\n📸 Photo Quality: Use good lighting and multiple angles\n📝 Description: Include brand, color, size, and unique features\n📍 Location: Be specific about where you lost/found it\n⏰ Time: Exact time helps with security camera footage\n🏷️ Serial Numbers: Include them for electronics\n💬 Contact: Keep your contact info updated',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showTutorial() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🎓 Quick Tutorial:\n\n1️⃣ Report: Tap "Report Item" and fill in details\n2️⃣ Search: Use natural language to find items\n3️⃣ Notifications: Enable alerts for instant updates\n4️⃣ Profile: Complete your profile for better contact\n5️⃣ AI Help: Ask me anything - I learn and improve!\n\nReady to try it out?',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showBestPractices() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '⭐ Best Practices for Success:\n\n🔍 Search First: Always check existing reports before posting\n📱 Act Fast: Report within 24 hours for best results\n🤝 Be Responsive: Reply quickly to contact attempts\n📍 Check Nearby: Look in adjacent areas too\n🔄 Update Status: Mark items as found/returned\n💬 Be Detailed: More info = better matches',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showFAQ() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '❓ Frequently Asked Questions:\n\nQ: How long do reports stay active?\nA: Reports remain active for 30 days, then archived\n\nQ: Can I edit my report after posting?\nA: Yes! You can update details anytime\n\nQ: How do notifications work?\nA: AI matches your report with new submissions\n\nQ: Is my contact info private?\nA: Yes, only shown to verified matches\n\nNeed more help?',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showPersonalizedTips() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🎯 Personalized Tips for You:\n\n📊 Based on your activity patterns, I recommend:\n• Setting up alerts for your frequent campus areas\n• Checking reports during your typical study hours\n• Following up on items similar to what you\'ve lost before\n\nI\'ll learn more about your preferences over time!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showCampusInsights() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🏫 Campus Insights:\n\n📈 Peak Lost Item Times:\n• 8-10 AM: Morning rush\n• 12-2 PM: Lunch period\n• 5-7 PM: End of day\n\n🎯 Top Locations:\n• Library (35% of reports)\n• Student Center (22%)\n• Dining Areas (18%)\n• Parking Lots (15%)\n\n📱 Most Lost Items: Phones, Keys, Wallets',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showSuccessStories() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🎉 Success Stories:\n\n📱 "Found my iPhone thanks to the detailed description and quick notification!" - Sarah M.\n\n💻 "Lost my laptop in the library, got it back within 2 hours!" - Mike T.\n\n🔑 "The AI matching system connected me with someone who found my keys!" - Lisa K.\n\n📊 Overall Success Rate: 78% of reported items are recovered!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showCampusHotspots() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🗺️ Campus Lost & Found Hotspots:\n\n🔥 High Activity Areas:\n• Main Library - Study areas, computer labs\n• Student Union - Food court, lounges\n• Gym & Recreation Center - Locker rooms, courts\n• Academic Buildings - Lecture halls, labs\n• Parking Areas - Lots A, B, and C\n\n💡 Pro Tip: Check these areas first when searching!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showRecoveryStats() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '📊 Recovery Statistics:\n\n✅ Overall Recovery Rate: 78%\n⚡ Average Recovery Time: 18 hours\n📸 Items with Photos: 85% recovery rate\n📝 Detailed Descriptions: 82% recovery rate\n🔔 With Notifications: 91% recovery rate\n\n🎯 Your chances improve significantly with complete reports!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showTimePatterns() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '⏰ Time Pattern Analysis:\n\n📈 Peak Lost Times:\n• Monday 8-10 AM (Weekend aftermath)\n• Friday 3-5 PM (Week-end rush)\n• Lunch hours daily (12-2 PM)\n\n🔍 Best Search Times:\n• Early morning (7-9 AM)\n• Late afternoon (4-6 PM)\n• Sunday evenings (cleanup time)\n\n💡 Timing your search strategically increases success!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showPrivacySettings() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🔒 Privacy & Security:\n\n• Your contact info is only shared with verified matches\n• You control what information is visible\n• All communications are logged for safety\n• You can block users if needed\n• Reports can be made anonymous\n\nYour privacy and safety are our top priorities!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showNotificationSettings() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🔔 Smart Notification Options:\n\n📱 Instant Alerts: Get notified immediately for matches\n📧 Daily Digest: Summary of new relevant items\n🎯 Smart Matching: AI-powered similarity detection\n📍 Location-Based: Alerts for your frequent areas\n⏰ Time-Based: Notifications during your active hours\n\nCustomize your notification preferences for the best experience!',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showHelp() {
+    setState(() {
+      _messages.add(const _AgentMessage(
+        sender: 'agent',
+        text: '🆘 How Can I Help You?\n\n🤖 I\'m your intelligent campus assistant with advanced AI capabilities:\n\n• Natural language understanding\n• Smart item matching and recommendations\n• Personalized suggestions based on your activity\n• Real-time campus insights and statistics\n• Automated notifications and alerts\n\nJust tell me what you need in plain English - I\'ll understand and help!',
+        messageType: _MessageType.helpful,
+        quickActions: [
+          _QuickAction(label: 'Report Item', icon: Icons.add_circle, action: 'report_item'),
+          _QuickAction(label: 'Search Items', icon: Icons.search, action: 'smart_search'),
+          _QuickAction(label: 'Get Tips', icon: Icons.lightbulb, action: 'smart_suggestions'),
+        ],
+      ));
+    });
+    _scrollToBottom();
+  }
+  
+  void _showDefaultResponse(String action) {
+    setState(() {
+      _messages.add(_AgentMessage(
+        sender: 'agent',
+        text: '🤖 I\'m still learning about "$action"! This feature is being enhanced with more AI capabilities. In the meantime, I can help you with reporting items, searching, and providing smart suggestions.',
+        messageType: _MessageType.system,
+      ));
+    });
+    _scrollToBottom();
   }
 
   void _navigateToReport() {

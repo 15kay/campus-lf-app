@@ -32,7 +32,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = ThemeMode.system; // Default to system theme
   void _updateThemeMode(ThemeMode mode) => setState(() => _themeMode = mode);
 
   @override
@@ -76,23 +76,118 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorScheme: lightScheme,
         scaffoldBackgroundColor: lightScheme.surface,
-        // Professional Typography System
+        // Professional Typography System with Enhanced Hierarchy
         textTheme: GoogleFonts.interTextTheme().copyWith(
-          displayLarge: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5),
-          displayMedium: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.25),
-          displaySmall: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600),
-          headlineLarge: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w600),
-          headlineMedium: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w600),
-          headlineSmall: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600),
-          titleLarge: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
-          titleMedium: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
-          titleSmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
-          bodyLarge: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w400),
-          bodyMedium: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400),
-          bodySmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w400),
-          labelLarge: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-          labelMedium: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),
-          labelSmall: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500),
+          // Display styles for hero content
+          displayLarge: GoogleFonts.inter(
+            fontSize: 36, 
+            fontWeight: FontWeight.w800, 
+            letterSpacing: -1.0,
+            height: 1.1,
+            color: lightScheme.onSurface,
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 32, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.75,
+            height: 1.15,
+            color: lightScheme.onSurface,
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 28, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.5,
+            height: 1.2,
+            color: lightScheme.onSurface,
+          ),
+          // Headlines for section titles
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 24, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.25,
+            height: 1.25,
+            color: lightScheme.onSurface,
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 22, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: -0.25,
+            height: 1.3,
+            color: lightScheme.onSurface,
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 20, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0,
+            height: 1.3,
+            color: lightScheme.onSurface,
+          ),
+          // Titles for cards and components
+          titleLarge: GoogleFonts.inter(
+            fontSize: 18, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0,
+            height: 1.35,
+            color: lightScheme.onSurface,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 16, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.1,
+            height: 1.4,
+            color: lightScheme.onSurface,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.1,
+            height: 1.4,
+            color: lightScheme.onSurface,
+          ),
+          // Body text for content
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 16, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.15,
+            height: 1.5,
+            color: lightScheme.onSurface,
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.25,
+            height: 1.5,
+            color: lightScheme.onSurface,
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 12, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.4,
+            height: 1.5,
+            color: lightScheme.onSurfaceVariant,
+          ),
+          // Labels for buttons and UI elements
+          labelLarge: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: lightScheme.onSurface,
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 12, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: lightScheme.onSurface,
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 10, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: lightScheme.onSurfaceVariant,
+          ),
         ),
         // Professional Card Design
         cardTheme: CardThemeData(
@@ -214,23 +309,118 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
         colorScheme: darkScheme,
         scaffoldBackgroundColor: darkScheme.surface,
-        // Professional Typography System (Dark)
+        // Professional Typography System with Enhanced Hierarchy (Dark)
         textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme).copyWith(
-          displayLarge: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5),
-          displayMedium: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.25),
-          displaySmall: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w600),
-          headlineLarge: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w600),
-          headlineMedium: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w600),
-          headlineSmall: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600),
-          titleLarge: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
-          titleMedium: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600),
-          titleSmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
-          bodyLarge: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w400),
-          bodyMedium: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400),
-          bodySmall: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w400),
-          labelLarge: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
-          labelMedium: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),
-          labelSmall: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500),
+          // Display styles for hero content
+          displayLarge: GoogleFonts.inter(
+            fontSize: 36, 
+            fontWeight: FontWeight.w800, 
+            letterSpacing: -1.0,
+            height: 1.1,
+            color: darkScheme.onSurface,
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 32, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.75,
+            height: 1.15,
+            color: darkScheme.onSurface,
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 28, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.5,
+            height: 1.2,
+            color: darkScheme.onSurface,
+          ),
+          // Headlines for section titles
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 24, 
+            fontWeight: FontWeight.w700, 
+            letterSpacing: -0.25,
+            height: 1.25,
+            color: darkScheme.onSurface,
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 22, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: -0.25,
+            height: 1.3,
+            color: darkScheme.onSurface,
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 20, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0,
+            height: 1.3,
+            color: darkScheme.onSurface,
+          ),
+          // Titles for cards and components
+          titleLarge: GoogleFonts.inter(
+            fontSize: 18, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0,
+            height: 1.35,
+            color: darkScheme.onSurface,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 16, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.1,
+            height: 1.4,
+            color: darkScheme.onSurface,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.1,
+            height: 1.4,
+            color: darkScheme.onSurface,
+          ),
+          // Body text for content
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 16, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.15,
+            height: 1.5,
+            color: darkScheme.onSurface,
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.25,
+            height: 1.5,
+            color: darkScheme.onSurface,
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 12, 
+            fontWeight: FontWeight.w400, 
+            letterSpacing: 0.4,
+            height: 1.5,
+            color: darkScheme.onSurfaceVariant,
+          ),
+          // Labels for buttons and UI elements
+          labelLarge: GoogleFonts.inter(
+            fontSize: 14, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: darkScheme.onSurface,
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 12, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: darkScheme.onSurface,
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 10, 
+            fontWeight: FontWeight.w600, 
+            letterSpacing: 0.5,
+            height: 1.4,
+            color: darkScheme.onSurfaceVariant,
+          ),
         ),
         // Professional Card Design (Dark)
         cardTheme: CardThemeData(
@@ -730,16 +920,16 @@ class _MainScaffoldState extends State<MainScaffold> {
   List<_NavItem> get _mainItems => [
         _NavItem(
           'Home',
-          Icons.home,
+          Icons.home_rounded,
           HomePage(
             onOpenDetails: _openDetails,
             onCreateReport: () => _navigateToReportPage(),
           ),
         ),
-        _NavItem('Matches', Icons.compare_arrows, const MatchesPage()),
-        _NavItem('My Reports', Icons.assignment, const MyReportsPage()),
-        _NavItem('Chat', Icons.chat, const ChatListPage()),
-        _NavItem('Profile', Icons.account_circle, ProfilePage(onProfileUpdated: _onProfileUpdated)),
+        _NavItem('Matches', Icons.compare_arrows_rounded, const MatchesPage()),
+        _NavItem('My Reports', Icons.assignment_rounded, const MyReportsPage()),
+        _NavItem('Chat', Icons.chat_bubble_rounded, const ChatListPage()),
+        _NavItem('Profile', Icons.person_rounded, ProfilePage(onProfileUpdated: _onProfileUpdated)),
       ];
 
   void _openDetails(Report r) {
@@ -1013,40 +1203,77 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     final titles = _mainItems.map((e) => e.title).toList();
     final isWide = MediaQuery.of(context).size.width > 600;
+    final cs = Theme.of(context).colorScheme;
+    
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        elevation: 0,
+        backgroundColor: cs.surface,
+        surfaceTintColor: Colors.transparent,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  colors: [cs.primary, cs.secondary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: cs.primary.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: ClipRRect(
-                 borderRadius: BorderRadius.circular(16),
-                 child: SvgPicture.asset(
-                   'web/logo.svg',
-                   width: 32,
-                   height: 32,
-                   placeholderBuilder: (context) => const Icon(
-                     Icons.school,
-                     size: 20,
-                     color: Color(0xFF075E54),
-                   ),
-                 ),
-               ),
+                borderRadius: BorderRadius.circular(18),
+                child: Image.asset(
+                  'assets/images/CampusLF_Logo.png',
+                  width: 36,
+                  height: 36,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.school_rounded,
+                    size: 20,
+                    color: cs.onPrimary,
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(width: 8),
-            Text(titles[_currentIndex], style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(width: 12),
+            Text(
+              titles[_currentIndex], 
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                letterSpacing: -0.25,
+              ),
+            ),
           ],
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.note_add), tooltip: 'Report Item', onPressed: () => setState(() => _currentIndex = 1)),
-          IconButton(icon: const Icon(Icons.exit_to_app), tooltip: 'Exit', onPressed: () => _confirmExit(context, _exitToLanding)),
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            child: IconButton.filled(
+              icon: const Icon(Icons.add_rounded, size: 20),
+              tooltip: 'Report Item',
+              style: IconButton.styleFrom(
+                backgroundColor: cs.primaryContainer,
+                foregroundColor: cs.onPrimaryContainer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () => _navigateToReportPage(),
+            ),
+          ),
           FutureBuilder<bool>(
             future: FirebaseService.isUserAuthenticated() 
                 ? FirebaseService.isUserAdmin(FirebaseService.getCurrentUser()!.uid)
@@ -1054,20 +1281,49 @@ class _MainScaffoldState extends State<MainScaffold> {
             builder: (context, isAdminSnapshot) {
               final isAdmin = isAdminSnapshot.data ?? false;
               return PopupMenuButton<String>(
-                tooltip: 'More',
+                tooltip: 'More options',
+                icon: Icon(Icons.more_vert_rounded, color: cs.onSurface),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 8,
+                shadowColor: Colors.black.withValues(alpha: 0.1),
                 itemBuilder: (ctx) => [
-                  const PopupMenuItem(value: 'settings', child: ListTile(leading: Icon(Icons.settings), title: Text('Settings'))),
-                  const PopupMenuItem(value: 'about', child: ListTile(leading: Icon(Icons.info), title: Text('About'))),
-                  if (isAdmin)
-                    const PopupMenuItem(
-                      value: 'admin', 
-                      child: ListTile(
-                        leading: Icon(Icons.admin_panel_settings), 
-                        title: Text('Admin Dashboard')
-                      )
+                  PopupMenuItem(
+                    value: 'settings',
+                    child: ListTile(
+                      leading: Icon(Icons.settings_rounded, color: cs.primary),
+                      title: Text('Settings', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+                      contentPadding: EdgeInsets.zero,
                     ),
-                  const PopupMenuItem(value: 'signout', child: ListTile(leading: Icon(Icons.logout), title: Text('Sign out'))),
-                 ],
+                  ),
+                  PopupMenuItem(
+                    value: 'about',
+                    child: ListTile(
+                      leading: Icon(Icons.info_rounded, color: cs.primary),
+                      title: Text('About', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                  if (isAdmin)
+                    PopupMenuItem(
+                      value: 'admin',
+                      child: ListTile(
+                        leading: Icon(Icons.admin_panel_settings_rounded, color: cs.primary),
+                        title: Text('Admin Dashboard', style: GoogleFonts.inter(fontWeight: FontWeight.w500)),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: 'signout',
+                    child: ListTile(
+                      leading: Icon(Icons.logout_rounded, color: cs.error),
+                      title: Text('Sign out', style: GoogleFonts.inter(fontWeight: FontWeight.w500, color: cs.error)),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
                  onSelected: (value) async {
               if (value == 'settings') {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -1107,10 +1363,18 @@ class _MainScaffoldState extends State<MainScaffold> {
       ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(2),
+          preferredSize: const Size.fromHeight(1),
           child: Container(
-            height: 2,
-            color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.18),
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  cs.outline.withValues(alpha: 0.1),
+                  cs.outline.withValues(alpha: 0.3),
+                  cs.outline.withValues(alpha: 0.1),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -1173,21 +1437,36 @@ class _MainScaffoldState extends State<MainScaffold> {
                                                right: 0,
                                                top: 0,
                                                child: Container(
-                                                 padding: const EdgeInsets.all(2),
+                                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                  decoration: BoxDecoration(
-                                                   color: Colors.red,
-                                                   borderRadius: BorderRadius.circular(10),
+                                                   gradient: LinearGradient(
+                                                     colors: [cs.error, cs.error.withValues(alpha: 0.8)],
+                                                     begin: Alignment.topCenter,
+                                                     end: Alignment.bottomCenter,
+                                                   ),
+                                                   borderRadius: BorderRadius.circular(12),
+                                                   border: Border.all(
+                                                     color: cs.surface,
+                                                     width: 2,
+                                                   ),
+                                                   boxShadow: [
+                                                     BoxShadow(
+                                                       color: cs.error.withValues(alpha: 0.3),
+                                                       blurRadius: 4,
+                                                       offset: const Offset(0, 2),
+                                                     ),
+                                                   ],
                                                  ),
                                                  constraints: const BoxConstraints(
-                                                   minWidth: 16,
-                                                   minHeight: 16,
+                                                   minWidth: 20,
+                                                   minHeight: 20,
                                                  ),
                                                  child: Text(
                                                    totalUnread > 99 ? '99+' : totalUnread.toString(),
-                                                   style: const TextStyle(
-                                                     color: Colors.white,
+                                                   style: GoogleFonts.inter(
+                                                     color: cs.onError,
                                                      fontSize: 10,
-                                                     fontWeight: FontWeight.bold,
+                                                     fontWeight: FontWeight.w700,
                                                    ),
                                                    textAlign: TextAlign.center,
                                                  ),
@@ -1220,21 +1499,36 @@ class _MainScaffoldState extends State<MainScaffold> {
                                                right: 0,
                                                top: 0,
                                                child: Container(
-                                                 padding: const EdgeInsets.all(2),
+                                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                  decoration: BoxDecoration(
-                                                   color: Colors.red,
-                                                   borderRadius: BorderRadius.circular(10),
+                                                   gradient: LinearGradient(
+                                                     colors: [cs.error, cs.error.withValues(alpha: 0.8)],
+                                                     begin: Alignment.topCenter,
+                                                     end: Alignment.bottomCenter,
+                                                   ),
+                                                   borderRadius: BorderRadius.circular(12),
+                                                   border: Border.all(
+                                                     color: cs.surface,
+                                                     width: 2,
+                                                   ),
+                                                   boxShadow: [
+                                                     BoxShadow(
+                                                       color: cs.error.withValues(alpha: 0.3),
+                                                       blurRadius: 4,
+                                                       offset: const Offset(0, 2),
+                                                     ),
+                                                   ],
                                                  ),
                                                  constraints: const BoxConstraints(
-                                                   minWidth: 16,
-                                                   minHeight: 16,
+                                                   minWidth: 20,
+                                                   minHeight: 20,
                                                  ),
                                                  child: Text(
                                                    totalUnread > 99 ? '99+' : totalUnread.toString(),
-                                                   style: const TextStyle(
-                                                     color: Colors.white,
+                                                   style: GoogleFonts.inter(
+                                                     color: cs.onError,
                                                      fontSize: 10,
-                                                     fontWeight: FontWeight.bold,
+                                                     fontWeight: FontWeight.w700,
                                                    ),
                                                    textAlign: TextAlign.center,
                                                  ),
@@ -1311,26 +1605,39 @@ class _MainScaffoldState extends State<MainScaffold> {
           ? null
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
+                    color: cs.surface,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: cs.outline.withValues(alpha: 0.1),
+                      width: 1,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 16,
+                        offset: const Offset(0, 8),
+                      ),
+                      BoxShadow(
+                        color: cs.primary.withValues(alpha: 0.05),
+                        blurRadius: 32,
+                        offset: const Offset(0, 16),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                     child: NavigationBar(
                       backgroundColor: Colors.transparent,
-                      height: 72,
+                      height: 76,
                       selectedIndex: _currentIndex,
                       onDestinationSelected: (i) => setState(() => _currentIndex = i),
+                      indicatorColor: cs.primaryContainer.withValues(alpha: 0.8),
+                      indicatorShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       destinations: _mainItems
                           .asMap()
                           .entries
@@ -1364,21 +1671,36 @@ class _MainScaffoldState extends State<MainScaffold> {
                                             right: 0,
                                             top: 0,
                                             child: Container(
-                                              padding: const EdgeInsets.all(2),
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius: BorderRadius.circular(10),
+                                                gradient: LinearGradient(
+                                                  colors: [cs.error, cs.error.withValues(alpha: 0.8)],
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: cs.surface,
+                                                  width: 2,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: cs.error.withValues(alpha: 0.3),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
                                               ),
                                               constraints: const BoxConstraints(
-                                                minWidth: 16,
-                                                minHeight: 16,
+                                                minWidth: 20,
+                                                minHeight: 20,
                                               ),
                                               child: Text(
                                                 totalUnread > 99 ? '99+' : totalUnread.toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
+                                                style: GoogleFonts.inter(
+                                                  color: cs.onError,
                                                   fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -1411,21 +1733,36 @@ class _MainScaffoldState extends State<MainScaffold> {
                                             right: 0,
                                             top: 0,
                                             child: Container(
-                                              padding: const EdgeInsets.all(2),
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                borderRadius: BorderRadius.circular(10),
+                                                gradient: LinearGradient(
+                                                  colors: [cs.error, cs.error.withValues(alpha: 0.8)],
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: cs.surface,
+                                                  width: 2,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: cs.error.withValues(alpha: 0.3),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
                                               ),
                                               constraints: const BoxConstraints(
-                                                minWidth: 16,
-                                                minHeight: 16,
+                                                minWidth: 20,
+                                                minHeight: 20,
                                               ),
                                               child: Text(
                                                 totalUnread > 99 ? '99+' : totalUnread.toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
+                                                style: GoogleFonts.inter(
+                                                  color: cs.onError,
                                                   fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                                 textAlign: TextAlign.center,
                                               ),

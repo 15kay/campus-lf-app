@@ -21,10 +21,11 @@ class _ChatListPageState extends State<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: const Color(0xFF2E7D32), // Professional green
+      backgroundColor: cs.primary,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2E7D32), // Professional green
+        backgroundColor: cs.primary,
         title: _isSearching
             ? TextField(
                 controller: _searchController,
@@ -103,9 +104,9 @@ class _ChatListPageState extends State<ChatListPage> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
+              return Center(
                 child: CircularProgressIndicator(
-                  color: Color(0xFF2E7D32), // Professional green
+                  color: cs.primary,
                 ),
               );
             }
@@ -229,7 +230,7 @@ class _ChatListPageState extends State<ChatListPage> {
             },
             leading: CircleAvatar(
               radius: 28,
-              backgroundColor: const Color(0xFF2E7D32), // Professional green
+              backgroundColor: Theme.of(context).colorScheme.primary,
               child: Text(
                 userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
                 style: const TextStyle(
@@ -262,7 +263,7 @@ class _ChatListPageState extends State<ChatListPage> {
                 Text(
                   _formatTime(lastMessageTime),
                   style: TextStyle(
-                    color: unreadCount > 0 ? const Color(0xFF2E7D32) : Colors.grey[500], // Professional green
+                    color: unreadCount > 0 ? Theme.of(context).colorScheme.primary : Colors.grey[500],
                     fontSize: 12,
                     fontWeight: unreadCount > 0 ? FontWeight.w600 : FontWeight.normal,
                   ),
@@ -271,8 +272,8 @@ class _ChatListPageState extends State<ChatListPage> {
                   const SizedBox(height: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF2E7D32), // Professional green
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
