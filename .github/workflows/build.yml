@@ -1,0 +1,72 @@
+name: Build CampusLF apps
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-user-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Flutter version
+        run: flutter --version
+      - name: Pub get (user app)
+        working-directory: campuslf
+        run: flutter pub get
+      - name: Build web (user app)
+        working-directory: campuslf
+        run: flutter build web --release
+      - name: Upload artifact (user web)
+        uses: actions/upload-artifact@v4
+        with:
+          name: campuslf-web
+          path: campuslf/build/web
+
+  build-user-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Pub get (user app)
+        working-directory: campuslf
+        run: flutter pub get
+      - name: Build APK (user app)
+        working-directory: campuslf
+        run: flutter build apk --release
+      - name: Upload artifact (user apk)
+        uses: actions/upload-artifact@v4
+        with:
+          name: campuslf-apk
+          path: campuslf/build/app/outputs/flutter-apk/app-release.apk
+
+  build-admin-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Pub get (admin app)
+        working-directory: campuslf_admin
+        run: flutter pub get
+      - name: Build web (admin app)
+        working-directory: campuslf_admin
+        run: flutter build web --release
+      - name: Upload artifact (admin web)
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-web
+          path: campuslf_admin/build/web

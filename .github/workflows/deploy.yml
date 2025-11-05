@@ -1,0 +1,57 @@
+name: Deploy Hosting (Firebase)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-user-web:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.FIREBASE_TOKEN != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
+      - name: Build web (user app)
+        working-directory: campuslf
+        run: flutter build web --release
+      - name: Deploy Hosting (user app)
+        working-directory: campuslf
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: firebase deploy --only hosting --project wsucampuslf --token "$FIREBASE_TOKEN"
+
+  deploy-admin-web:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.FIREBASE_TOKEN != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Install Firebase CLI
+        run: npm i -g firebase-tools
+      - name: Build web (admin app)
+        working-directory: campuslf_admin
+        run: flutter build web --release
+      - name: Deploy Hosting (admin app)
+        working-directory: campuslf_admin
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: firebase deploy --only hosting --project wsulostfound --token "$FIREBASE_TOKEN"
