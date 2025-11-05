@@ -2,7 +2,7 @@
 
 This repository contains two Flutter applications:
 
-- `campuslf/` — The user-facing Campus Lost & Found app (Android, iOS, Web)
+- `campuslf/` — The user-facing Campus Lost & Found app (Android, Web)
 - `campuslf_admin/` — The admin portal (Web) for moderation and analytics
 
 Key notes:
