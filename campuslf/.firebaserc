@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "wsucampuslf"
+  },
+  "targets": {
+    "wsucampuslf": {
+      "hosting": {
+        "user": [
+          "wsucampuslf"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /items/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null 
+        && request.auth.token.email.matches('.*@(wsu\\.ac\\.za|mywsu\\.ac\\.za)')
+        && resource.size < 5 * 1024 * 1024; // 5MB limit
+    }
+    
+    // Chat images for messaging conversations
+    match /chat_images/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.auth.token.email.matches('.*@(wsu\\.ac\\.za|mywsu\\.ac\\.za)')
+        && resource.size < 5 * 1024 * 1024; // 5MB limit
+    }
+  }
+}

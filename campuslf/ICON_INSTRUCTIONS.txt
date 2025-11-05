@@ -1,0 +1,47 @@
+APP ICON SETUP INSTRUCTIONS
+============================
+
+CURRENT STATUS:
+- App title updated to "WSU Lost & Found" 
+- Windows app title updated in main.cpp
+- Flutter default logo removed from app
+
+TO CREATE SEARCH ICON FOR WINDOWS:
+
+1. REPLACE THE EXISTING ICON:
+   Location: windows/runner/resources/app_icon.ico
+   
+2. CREATE SEARCH ICON:
+   - Use any icon editor or online tool
+   - Create a magnifying glass icon (search symbol)
+   - Colors: Black magnifying glass on white background
+   - Sizes needed: 16x16, 32x32, 48x48, 256x256 pixels
+   - Save as app_icon.ico
+
+3. ONLINE ICON GENERATORS:
+   - favicon.io
+   - iconifier.net
+   - convertio.co
+   
+4. SEARCH ICON DESIGN:
+   - Simple magnifying glass
+   - Black outline, white background
+   - Clean, minimal design
+   - Professional appearance
+
+5. FLUTTER APP ICON (for mobile):
+   Add to pubspec.yaml:
+   ```
+   flutter_icons:
+     android: true
+     ios: true
+     image_path: "assets/icon/search_icon.png"
+   ```
+
+CURRENT APP BRANDING:
+- All screens use search icon as app logo
+- Consistent black search icon throughout app
+- No Flutter default logos anywhere
+- Professional WSU branding
+
+The app is now properly branded with search icon as the unified logo.

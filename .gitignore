@@ -1,0 +1,30 @@
+# Global ignores
+.DS_Store
+Thumbs.db
+
+# Flutter & Dart
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+
+# Android/Gradle
+**/.gradle/
+**/.idea/
+**/android/.gradle/
+**/android/build/
+
+# iOS
+**/ios/Pods/
+**/ios/Flutter/Flutter.podspec
+
+# Firebase local
+**/.firebase/
+
+# Local caches (root)
+/.pub-cache/
+/.gradle/
+
+# Logs
+**/*.log

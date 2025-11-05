@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+    function isLikesOnlyUpdate() {
+      // Only the 'likes' field changes
+      return request.resource.data.diff(resource.data).changedKeys().hasOnly(['likes']);
+    }
+
+    // Users
+    match /users/{userId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow write: if isSignedIn() && request.auth.uid == userId || isAdmin();
+    }
+
+    // Chats metadata (top-level chat documents)
+    // Admin dashboard and user app read chat metadata like participants, lastMessage, lastMessageTime
+    match /chats/{chatId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if isAdmin() || (isSignedIn() && (
+        (resource.data.participants != null && resource.data.participants.hasAny([request.auth.uid])) ||
+        (request.resource.data.participants != null && request.resource.data.participants.hasAny([request.auth.uid]))
+      ));
+    }
+
+    // Chat messages subcollection
+    match /chats/{chatId}/messages/{messageId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.senderId == request.auth.uid);
+    }
+
+    // Items (Lost/Found Reports)
+    match /items/{itemId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      // Allow owners to fully update/delete; allow any signed-in user to update likes only
+      allow update: if isAdmin() || (isSignedIn() && (resource.data.userId == request.auth.uid || isLikesOnlyUpdate()));
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Forum
+    match /forum_posts/{postId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      // Allow owners/admins to update/delete; allow likes-only update by any signed-in user
+      allow update: if isAdmin() || (isSignedIn() && (resource.data.userId == request.auth.uid || isLikesOnlyUpdate()));
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Forum comments
+    match /forum_posts/{postId}/comments/{commentId} {
+      allow read: if isSignedIn() || isAdmin();
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Legacy messages collection (if present)
+    match /messages/{messageId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

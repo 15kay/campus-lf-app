@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus L&F Analytics Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <h1>Analytics Dashboard</h1>
+            <div class="header-actions">
+                <button class="refresh-btn" onclick="loadItems()">
+                    <span class="icon">🔄</span> Refresh
+                </button>
+            </div>
+        </header>
+
+        <div class="overview-cards">
+            <div class="metric-card blue">
+                <div class="metric-icon">📦</div>
+                <div class="metric-value" id="totalItems">0</div>
+                <div class="metric-label">Total Items</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon">🔍</div>
+                <div class="metric-value" id="lostItems">0</div>
+                <div class="metric-label">Lost Items</div>
+            </div>
+            <div class="metric-card green">
+                <div class="metric-icon">✅</div>
+                <div class="metric-value" id="foundItems">0</div>
+                <div class="metric-label">Found Items</div>
+            </div>
+            <div class="metric-card orange">
+                <div class="metric-icon">📈</div>
+                <div class="metric-value" id="successRate">0%</div>
+                <div class="metric-label">Success Rate</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <h3>Weekly Trend</h3>
+                <canvas id="trendChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="category-container">
+                <h3>Category Breakdown</h3>
+                <div id="categoryBreakdown"></div>
+            </div>
+
+            <div class="location-container">
+                <h3>Location Hotspots</h3>
+                <div id="locationHotspots"></div>
+            </div>
+
+            <div class="success-container">
+                <h3>Success Rate</h3>
+                <div class="success-rate-display">
+                    <div class="success-percentage" id="successPercentage">70%</div>
+                    <div class="success-text">Items successfully reunited</div>
+                    <div class="success-icon">📈</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

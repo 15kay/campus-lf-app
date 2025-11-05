@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+    
+    function isValidEmail(email) {
+      // Escape dots in regex for valid domain check
+      return email.matches('.*@(wsu\\.ac\\.za|mywsu\\.ac\\.za)');
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidEmail(request.resource.data.email);
+      allow update, delete: if isOwner(userId);
+    }
+
+    match /messages/{messageId} {
+      allow read: if isSignedIn() && 
+        (request.auth.token.email == resource.data.senderEmail || 
+         request.auth.token.email == resource.data.receiverEmail);
+      allow create: if isSignedIn() && 
+        request.auth.token.email == request.resource.data.senderEmail &&
+        isValidEmail(request.resource.data.receiverEmail);
+      allow update: if isSignedIn() && 
+        request.auth.token.email == resource.data.receiverEmail &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']);
+    }
+
+    match /items/{itemId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && 
+        request.auth.uid == request.resource.data.userId &&
+        isValidEmail(request.resource.data.contactInfo);
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    match /forum_posts/{postId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow update, delete: if isOwner(resource.data.userId);
+    }
+
+    match /forum_posts/{postId}/comments/{commentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow update, delete: if isOwner(resource.data.userId);
+    }
+  }
+}
